@@ -8,7 +8,8 @@ if __name__ == "__main__":
     data = PPD.PreProcessData(
         train_path=TRAIN_PATH,
         test_path=TEST_PATH,
-        target=["dropoff_lat","dropoff_lng"])
+        target=["dropoff_lat","dropoff_lng"],
+        base_features =[])#["begintrip_lat","begintrip_lng","day_of_week","hour_of_day"])
 
     RF = RandomForestRegressor(n_estimators=100,criterion="mse")
     RF.fit(X=data.X_train,y=data.y_train)
