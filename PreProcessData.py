@@ -25,7 +25,7 @@ class PreProcessData:
             )
         self.train_df = self.preprocess_train_data(train_df)
         self.CountFeatures = CF.CountFeatures(in_feat=list(self.train_df["begin_labels"]),
-                                            out_feat=list(self.train_df["drop_off_labels"]))
+                                            out_feat=list(self.train_df["dropoff_labels"]))
         self.X_train, self.y_train=self.make_data_arrays(self.train_df)
 
         #preprocess test data
@@ -51,7 +51,7 @@ class PreProcessData:
     def preprocess_train_data(self,train_df):
         train_df = self.clean_data(train_df)
         train_df["begin_labels"]=self.clusters.start_MS.labels_
-        train_df["drop_off_labels"]=self.clusters.end_MS.labels_
+        train_df["dropoff_labels"]=self.clusters.end_MS.labels_
         train_df = self.add_time_features(train_df)
         return train_df  
 
@@ -61,6 +61,11 @@ class PreProcessData:
             x=test_df["begintrip_lng"],
             y=test_df["begintrip_lat"],
             start=True
+            )
+        test_df["dropoff_labels"] = self.clusters.predict_labels(
+            x=test_df["dropoff_lng"],
+            y=test_df["dropoff_lat"],
+            start=False
             )
         test_df = self.add_time_features(test_df)
         #add label columns 

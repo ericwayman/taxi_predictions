@@ -34,6 +34,27 @@ class LocationClusters():
         points = make_coordinates(x,y)
         return MS.predict(points)
 
+    def expected_locations(self,prob_matrix,end):
+        '''
+        given a 
+        params:
+            prob_matrix-- A list of probabilities indexed by cluster labels.
+                prob_matrix[i,:] is the probability vector for observation i
+                so prob_matrix[i,j] is the probability observation i is in cluster j
+            end -- A boolean.  if True, uses the dropoff location centers
+        '''
+        if end == True:
+            MS = self.end_MS
+        else:
+            MS = self.start_MS
+        cluster_centers = MS.cluster_centers_
+        x = cluster_centers[:,0].reshape(-1,1)
+        y = cluster_centers[:,1].reshape(-1,1)
+        Ex = prob_matrix.dot(x)
+        Ey = prob_matrix.dot(y)
+        return np.hstack((Ex,Ey))
+
+
 
 #utility functions
 def make_coordinates(x,y):
