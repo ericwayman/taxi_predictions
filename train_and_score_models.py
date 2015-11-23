@@ -41,33 +41,43 @@ def save_model(model,model_file="models.p"):
 if __name__ == "__main__":
     TRAIN_PATH="data/hw1_train.csv"
     TEST_PATH="data/hw1_test.csv"
-    # data = PPD.PreProcessData(
-    #     train_path=TRAIN_PATH,
-    #     test_path=TEST_PATH,
-    #     target=["dropoff_lat","dropoff_lng"],
-    #     base_features =[])#["begintrip_lat","begintrip_lng","day_of_week","hour_of_day"])
 
-    # RF = RandomForestRegressor(n_estimators=100,criterion="mse")
-    # RF.fit(X=data.X_train,y=data.y_train)
-    # r_squared = RF.score(X=data.X_test,y=data.y_test)
-    # print "For the RandomForestRegressor, the out of sample R^2: {}".format(r_squared)
-    # R2 = compute_rsquared(y_true=data.y_test,y_pred=RF.predict(data.X_test))
-    # print "Alternative way to compute R^2:{}".format(R2)
     data = PPD.PreProcessData(
         train_path=TRAIN_PATH,
         test_path=TEST_PATH,
-        target=["dropoff_labels"],
+        target=["dropoff_lat","dropoff_lng"],
         base_features =[])#["begintrip_lat","begintrip_lng","day_of_week","hour_of_day"])
 
-    RC = RandomForestClassifier(n_estimators=100)
-    print "training random forest"
-    RC.fit(X=data.X_train,y=data.y_train)
-    print "random forest trained"
-    prob_matrix = RC.predict_proba(data.X_test)
-    r_squared = score_classifier(prob_matrix=prob_matrix,true_labels=data.y_test, LC= data.clusters)
-    print r_squared
+    RF = RandomForestRegressor(n_estimators=100,criterion="mse")
+    RF.fit(X=data.X_train,y=data.y_train)
+    r_squared = RF.score(X=data.X_test,y=data.y_test)
+    print "For the RandomForestRegressor, the out of sample R^2: {}".format(r_squared)
+    model_dict = {}
+    model_dict["model"] = RF
+    model_dict["location_clusters"]=data.clusters
+    model_dict["count_features"]=data.CountFeatures
+    model_dict["base_features"]=data.base_features
+    print "saving model"
+    save_model(model=model_dict,model_file="model_dict.p")
+
+    '''
+    Code to train RandomForestClassifier.  Work in Progress
+    '''
+    # data = PPD.PreProcessData(
+    #     train_path=TRAIN_PATH,
+    #     test_path=TEST_PATH,
+    #     target=["dropoff_labels"],
+    #     base_features =[])#["begintrip_lat","begintrip_lng","day_of_week","hour_of_day"])
+
+    # RC = RandomForestClassifier(n_estimators=100)
+    # print "training random forest"
+    # RC.fit(X=data.X_train,y=data.y_train)
+    # print "random forest trained"
+    # prob_matrix = RC.predict_proba(data.X_test)
+    # r_squared = score_classifier(prob_matrix=prob_matrix,true_labels=data.y_test, LC= data.clusters)
+    # print r_squared
     
-    print "Saving model."
-    #save model
-    save_model(model=RC,model_file="model.p")
+    # print "Saving model."
+    # #save model
+    # save_model(model=RC,model_file="model.p")
 
